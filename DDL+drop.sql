@@ -110,6 +110,12 @@ create table takes (
 	foreign key (ID) references student on delete cascade
 );
 
+
+CREATE TABLE grade_points (
+    grade VARCHAR(2) PRIMARY KEY,
+    points NUMERIC(3,2)
+);
+
 create table advisor (
 	s_ID varchar(5),
 	i_ID varchar(5),
@@ -149,6 +155,20 @@ create table prereq (
 	foreign key (course_id) references course on delete cascade,
 	foreign key (prereq_id) references course
 );
+
+
+INSERT INTO grade_points (grade, points) VALUES
+('A', 4.0),
+('A-', 3.7),
+('B+', 3.3),
+('B', 3.0),
+('B-', 2.7),
+('C+', 2.3),
+('C', 2.0),
+('C-', 1.7),
+('D+', 1.3),
+('D', 1.0),
+('F', 0.0);
 
 INSERT INTO
 	department (dept_name, building, budget)
@@ -217,112 +237,57 @@ VALUES
 
 
 
+-- a. Find the total grade-points earned by the student with ID 12345, across all courses taken by the student.
 
-
--- a. Find the titles of courses in the Comp. Sci. department that have 3 credits.
-SELECT
-	title
-FROM
-	course
-WHERE
-	dept_name = 'Comp. Sci.'
-	AND credits = 3;
-
-
-
-
--- b. Find the IDs of all students who were taught by an instructor named Einstein; make sure there are no duplicates in the result.
-SELECT
-	DISTINCT takes.ID
-FROM
-	takes
-	JOIN teaches USING (course_id, sec_id, semester, year)
-	JOIN instructor USING (ID)
-WHERE
-	instructor.name = 'Einstein';
+SELECT 
+    SUM(course.credits * grade_points.points) AS total_grade_points
+FROM 
+    takes
+JOIN 
+    course ON takes.course_id = course.course_id
+JOIN 
+    grade_points ON takes.grade = grade_points.grade
+WHERE 
+    takes.ID = '12345';
 
 
 
--- c. Find the highest salary of any instructor.
-SELECT
-	MAX(salary) AS highest_salary
-FROM
-	instructor;
 
 
--- d. Find all instructors earning the highest salary (there may be more than one with the same salary).
-SELECT
-	ID,
-	name,
-	salary
-FROM
-	instructor
-WHERE
-	salary = (
-		SELECT
-			MAX(salary)
-		FROM
-			instructor
-	);
+-- b. Find the grade-point average (GPA) for the above student, that is, the total grade-points divided by the total credits for the associated courses.
 
--- e. Find the enrollment of each section that was offered in Autumn 2009.
-SELECT
-	course_id,
-	sec_id,
-	COUNT(ID) AS enrollment
-FROM
-	takes
-WHERE
-	semester = 'Fall'
-	AND year = 2009
+SELECT 
+    SUM(course.credits * grade_points.points) / SUM(course.credits) AS GPA
+FROM 
+    takes
+JOIN 
+    course ON takes.course_id = course.course_id
+JOIN 
+    grade_points ON takes.grade = grade_points.grade
+WHERE 
+    takes.ID = '12345';
 
--- The GROUP BY course_id, sec_id ensures that the enrollment count is calculated for each unique section.
+
+
+
+
+
+-- c. Find the ID and the grade-point average of every student.
+
+SELECT 
+    takes.ID,
+    SUM(course.credits * grade_points.points) / SUM(course.credits) AS GPA
+FROM 
+    takes
+JOIN 
+    course ON takes.course_id = course.course_id
+JOIN 
+    grade_points ON takes.grade = grade_points.grade
 GROUP BY 
-	course_id,
-	sec_id;
-
--- f. Find the maximum enrollment, across all sections, in Autumn 2009.
-SELECT
-	MAX(enrollment) AS max_enrollment
-FROM
-	(
-		SELECT
-			COUNT(ID) AS enrollment
-		FROM
-			takes
-		WHERE
-			semester = 'Fall'
-			AND year = 2009
-		GROUP BY
-			course_id,
-			sec_id
-	) AS section_enrollments;
+    takes.ID;
 
 
--- g. Find the sections that had the maximum enrollment in Autumn 2009.
-WITH section_enrollments AS (
-	SELECT
-		course_id,
-		sec_id,
-		COUNT(ID) AS enrollment
-	FROM
-		takes
-	WHERE
-		semester = 'Fall'
-		AND year = 2009
-	GROUP BY
-		course_id,
-		sec_id
-)
-SELECT
-	course_id,
-	sec_id
-FROM
-	section_enrollments
-WHERE
-	enrollment = (
-		SELECT
-			MAX(enrollment)
-		FROM
-			section_enrollments
-	);
+
+
+
+
