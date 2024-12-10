@@ -250,6 +250,10 @@ INSERT INTO
 VALUES
 	('12345', 'CS101', 'S1', 'Fall', 2009, 'A');
 
+
+
+
+
 -- a. Find the total grade-points earned by the student with ID 12345, across all courses taken by the student.
 SELECT
 	SUM(course.credits * grade_points.points) AS total_grade_points
@@ -260,7 +264,8 @@ FROM
 WHERE
 	takes.ID = '12345';
 
--- b. Find the grade-point average (GPA) for the above student, that is, the total grade-points divided by the total credits for the associated courses.
+-- b. Find the grade-point average (GPA) for the above student, that is, the total grade-points 
+-- divided by the total credits for the associated courses.
 SELECT
 	SUM(course.credits * grade_points.points) / SUM(course.credits) AS GPA
 FROM

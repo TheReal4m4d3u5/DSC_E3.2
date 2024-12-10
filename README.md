@@ -1,7 +1,8 @@
 # E3.2DSC
 
-![Output](image.png)
+![Output](output.png)
 
+![quiries](image.png)
 
 Suppose you are given a relation grade_points(grade, points), which provides a conversion from letter grades in the takes relation to numeric scores; for example, an "A" grade could be specified to correspond to 4 points, a "B+" to 3.7 points, a "B" to 3 points, and so on. The grade points earned by a student for a course offering (section) is defined as the number of credits for the course multiplied by the numeric points for the grade that the student received.
 
