@@ -1,4 +1,6 @@
-SET client_min_messages TO WARNING;
+SET
+	client_min_messages TO WARNING;
+
 drop TABLE IF EXISTS prereq;
 
 drop TABLE IF EXISTS time_slot;
@@ -113,10 +115,9 @@ create table takes (
 	foreign key (ID) references student on delete cascade
 );
 
-
 CREATE TABLE grade_points (
-    grade VARCHAR(2) PRIMARY KEY,
-    points NUMERIC(3,2)
+	grade VARCHAR(2) PRIMARY KEY,
+	points NUMERIC(3, 2)
 );
 
 create table advisor (
@@ -159,20 +160,23 @@ create table prereq (
 	foreign key (prereq_id) references course
 );
 
-DELETE FROM grade_points;
+DELETE FROM
+	grade_points;
 
-INSERT INTO grade_points (grade, points) VALUES
-('A', 4.0),
-('A-', 3.7),
-('B+', 3.3),
-('B', 3.0),
-('B-', 2.7),
-('C+', 2.3),
-('C', 2.0),
-('C-', 1.7),
-('D+', 1.3),
-('D', 1.0),
-('F', 0.0);
+INSERT INTO
+	grade_points (grade, points)
+VALUES
+	('A', 4.0),
+	('A-', 3.7),
+	('B+', 3.3),
+	('B', 3.0),
+	('B-', 2.7),
+	('C+', 2.3),
+	('C', 2.0),
+	('C-', 1.7),
+	('D+', 1.3),
+	('D', 1.0),
+	('F', 0.0);
 
 INSERT INTO
 	department (dept_name, building, budget)
@@ -236,67 +240,45 @@ INSERT INTO
 VALUES
 	('S101', 'CS101', 'S1', 'Fall', 2009, 'A');
 
+INSERT INTO
+	student (ID, name, dept_name, tot_cred)
+VALUES
+	('12345', 'Bob', 'Comp. Sci.', 40);
 
-INSERT INTO student (ID, name, dept_name, tot_cred) VALUES
-('12345', 'Bob', 'Comp. Sci.', 40);
-
-INSERT INTO takes (ID, course_id, sec_id, semester, year, grade) VALUES
-('12345', 'CS101', 'S1', 'Fall', 2009, 'A');
-
-
+INSERT INTO
+	takes (ID, course_id, sec_id, semester, year, grade)
+VALUES
+	('12345', 'CS101', 'S1', 'Fall', 2009, 'A');
 
 -- a. Find the total grade-points earned by the student with ID 12345, across all courses taken by the student.
-
-SELECT 
-    SUM(course.credits * grade_points.points) AS total_grade_points
-FROM 
-    takes
-JOIN 
-    course ON takes.course_id = course.course_id
-JOIN 
-    grade_points ON takes.grade = grade_points.grade
-WHERE 
-    takes.ID = '12345';
-
-
-
-
+SELECT
+	SUM(course.credits * grade_points.points) AS total_grade_points
+FROM
+	takes
+	JOIN course ON takes.course_id = course.course_id
+	JOIN grade_points ON takes.grade = grade_points.grade
+WHERE
+	takes.ID = '12345';
 
 -- b. Find the grade-point average (GPA) for the above student, that is, the total grade-points divided by the total credits for the associated courses.
-
-SELECT 
-    SUM(course.credits * grade_points.points) / SUM(course.credits) AS GPA
-FROM 
-    takes
-JOIN 
-    course ON takes.course_id = course.course_id
-JOIN 
-    grade_points ON takes.grade = grade_points.grade
-WHERE 
-    takes.ID = '12345';
-
-
-
-
-
+SELECT
+	SUM(course.credits * grade_points.points) / SUM(course.credits) AS GPA
+FROM
+	takes
+	JOIN course ON takes.course_id = course.course_id
+	JOIN grade_points ON takes.grade = grade_points.grade
+WHERE
+	takes.ID = '12345';
 
 -- c. Find the ID and the grade-point average of every student.
-
-SELECT 
-    takes.ID,
-    SUM(course.credits * grade_points.points) / SUM(course.credits) AS GPA
-FROM 
-    takes
-JOIN 
-    course ON takes.course_id = course.course_id
-JOIN 
-    grade_points ON takes.grade = grade_points.grade
-GROUP BY 
-    takes.ID;
-
-
-
-
-
+SELECT
+	takes.ID,
+	SUM(course.credits * grade_points.points) / SUM(course.credits) AS GPA
+FROM
+	takes
+	JOIN course ON takes.course_id = course.course_id
+	JOIN grade_points ON takes.grade = grade_points.grade
+GROUP BY
+	takes.ID;
 
 RESET client_min_messages;
