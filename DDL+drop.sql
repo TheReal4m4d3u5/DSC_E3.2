@@ -1,24 +1,27 @@
-drop table prereq;
+SET client_min_messages TO WARNING;
+drop TABLE IF EXISTS prereq;
 
-drop table time_slot;
+drop TABLE IF EXISTS time_slot;
 
-drop table advisor;
+drop TABLE IF EXISTS advisor;
 
-drop table takes;
+drop TABLE IF EXISTS takes;
 
-drop table student;
+drop TABLE IF EXISTS student;
 
-drop table teaches;
+drop TABLE IF EXISTS teaches;
 
-drop table section;
+drop TABLE IF EXISTS section;
 
-drop table instructor;
+drop TABLE IF EXISTS instructor;
 
-drop table course;
+drop TABLE IF EXISTS course;
 
-drop table department;
+drop TABLE IF EXISTS department;
 
-drop table classroom;
+drop TABLE IF EXISTS classroom;
+
+DROP TABLE IF EXISTS grade_points;
 
 create table classroom (
 	building varchar(15),
@@ -156,6 +159,7 @@ create table prereq (
 	foreign key (prereq_id) references course
 );
 
+DELETE FROM grade_points;
 
 INSERT INTO grade_points (grade, points) VALUES
 ('A', 4.0),
@@ -233,7 +237,11 @@ VALUES
 	('S101', 'CS101', 'S1', 'Fall', 2009, 'A');
 
 
+INSERT INTO student (ID, name, dept_name, tot_cred) VALUES
+('12345', 'Bob', 'Comp. Sci.', 40);
 
+INSERT INTO takes (ID, course_id, sec_id, semester, year, grade) VALUES
+('12345', 'CS101', 'S1', 'Fall', 2009, 'A');
 
 
 
@@ -291,3 +299,4 @@ GROUP BY
 
 
 
+RESET client_min_messages;
